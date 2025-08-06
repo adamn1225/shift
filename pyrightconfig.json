@@ -1,0 +1,14 @@
+{
+    "venvPath": "/home/bender/pdf_scripts",
+    "venv": ".venv",
+    "pythonVersion": "3.10",
+    "include": [
+        "."
+    ],
+    "extraPaths": [
+        "/home/bender/pdf_scripts/.venv/lib/python3.10/site-packages"
+    ],
+    "typeCheckingMode": "basic",
+    "autoSearchPaths": true,
+    "useLibraryCodeForTypes": true
+}

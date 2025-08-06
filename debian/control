@@ -1,0 +1,31 @@
+Source: shift
+Section: utils
+Priority: optional
+Maintainer: Your Name <your.email@example.com>
+Build-Depends: debhelper-compat (= 13), python3-setuptools, python3-all, dh-python
+Standards-Version: 4.6.0
+Homepage: https://github.com/adamn1225/shift
+Vcs-Browser: https://github.com/adamn1225/shift
+Vcs-Git: https://github.com/adamn1225/shift.git
+
+Package: shift
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}, python3-pip, python3-bs4, python3-markdown, python3-pil, wkhtmltopdf
+Recommends: pandoc, libreoffice
+Description: Universal document format converter
+ Shift is a powerful command-line tool for converting between document formats.
+ Simply shift your documents from one format to another with ease.
+ .
+  * Convert between PDF, DOCX, HTML, Markdown, and text formats
+  * Apply custom CSS styling to HTML output
+  * Compress PDFs for email attachments
+  * Batch processing capabilities
+  * Command-line interface for automation
+ .
+ This package provides the main command:
+  - shift: Universal document converter
+ .
+ Usage examples:
+  shift document.docx --to pdf
+  shift report.md --to html --css style.css
+  shift file.pdf --to text

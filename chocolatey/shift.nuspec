@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>shift</id>
+    <version>1.0.0</version>
+    <packageSourceUrl>https://github.com/adamn1225/shift</packageSourceUrl>
+    <owners>adamn1225</owners>
+    <title>Shift - Universal Document Converter</title>
+    <authors>adamn1225</authors>
+    <projectUrl>https://github.com/adamn1225/shift</projectUrl>
+    <iconUrl>https://cdn.jsdelivr.net/gh/adamn1225/shift/icon.png</iconUrl>
+    <copyright>2025</copyright>
+    <licenseUrl>https://github.com/adamn1225/shift/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/adamn1225/shift</projectSourceUrl>
+    <bugTrackerUrl>https://github.com/adamn1225/shift/issues</bugTrackerUrl>
+    <tags>pdf converter document markdown html docx cli</tags>
+    <summary>Universal document format converter - shift between PDF, Word, HTML, Markdown and more</summary>
+    <description>
+Shift is a powerful command-line tool for converting between document formats.
+Simply shift your documents from one format to another with ease.
+
+**Features:**
+* Convert between PDF, DOCX, HTML, Markdown, and text formats
+* Apply custom CSS styling to HTML output
+* Batch processing capabilities
+* Command-line interface for automation
+* Cross-platform compatibility
+
+**Usage:**
+```
+shift document.docx --to pdf
+shift report.md --to html --css style.css
+shift file.pdf --to text --output extracted.txt
+```
+    </description>
+    <dependencies>
+      <dependency id="python3" version="3.8.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

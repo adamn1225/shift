@@ -1,0 +1,132 @@
+    venv/
+# Ignore Python virtual environment directories
+    .venv/
+# Ignore Python bytecode files
+    __pycache__/
+# Ignore Python bytecode files
+    *.pyc
+# Ignore Python bytecode files
+    *.pyo
+# Ignore Python bytecode files
+    *.pyd
+# Ignore Jupyter Notebook checkpoints
+    .ipynb_checkpoints/
+# Ignore Jupyter Notebook metadata
+    .ipython/
+# Ignore Jupyter Notebook configuration files
+    .jupyter/
+# Ignore Jupyter Notebook output files
+    *.ipynb
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Debian package build artifacts
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/files
+debian/shift/
+debian/shift.substvars
+debian/tmp/
+*.deb
+*.dsc
+*.changes
+*.build
+*.buildinfo
+
+# Chocolatey package artifacts
+chocolatey/*.nupkg
+chocolatey/tools/
+
+# Test files and outputs
+test_output/
+*.test.html
+*.test.pdf
+*.test.docx
+*.test.txt
+sample_output.*
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Documentation build
+docs/_build/
+site/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Personal/sensitive files
+config.local.*
+*.secret
+*.key
+.env.local
+.env.production
+
+# Large sample files (keep small examples only)
+samples/*.pdf
+samples/*.docx
+!samples/small_example.*
+
+# Backup files
+*.bak
+*.backup
+*~

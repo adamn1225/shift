@@ -1,0 +1,31 @@
+# PDF Tools Requirements
+# Core PDF manipulation
+pypdf==5.9.0
+pymupdf==1.26.3
+PyPDF2==3.0.1
+
+# Image processing
+Pillow==11.3.0
+pdf2image==1.17.0
+pytesseract==0.3.13
+
+# Document conversion
+python-docx==1.2.0
+docx2python==3.5.0
+markdown==3.8.2
+beautifulsoup4==4.13.4
+html2text==2025.4.15
+pdfkit==1.0.0
+fpdf2==2.8.3
+
+# Web scraping and parsing
+bs4==0.0.2
+lxml==6.0.0
+
+# Scientific computing (for advanced features)
+numpy==2.2.6
+pandas==2.3.1
+
+# Additional utilities
+pathlib==1.0.1
+click==8.2.1

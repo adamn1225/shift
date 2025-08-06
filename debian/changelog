@@ -1,0 +1,10 @@
+shift (1.0.0-1) unstable; urgency=medium
+
+  * Initial release
+  * Universal document converter with support for PDF, DOCX, HTML, MD, TXT
+  * CSS styling support for HTML output
+  * PDF compression and page management tools
+  * Simple command-line interface: shift document.md --to html
+  * Batch processing capabilities
+
+ -- Your Name <your.email@example.com>  Tue, 06 Aug 2025 17:00:00 +0000

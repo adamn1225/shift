@@ -1,0 +1,20 @@
+#!/bin/bash
+# Post-installation script for shift package
+
+set -e
+
+# Install required Python packages via pip3
+echo "Installing Python dependencies for shift..."
+pip3 install --quiet pypdf fpdf2 python-docx docx2python pdfkit html2text 2>/dev/null || true
+
+echo "shift installation completed successfully!"
+echo ""
+echo "Usage examples:"
+echo "  shift document.docx --to pdf"
+echo "  shift report.md --to html --css professional.css"
+echo "  shift file.pdf --to text"
+echo ""
+
+#DEBHELPER#
+
+exit 0
