@@ -1,36 +1,131 @@
-# Shift PowerShell Module
-# Save as Shift.psm1
+# Shift Cloud CLI - PowerShell Module for Windows
 
-function Invoke-Shift {
+$ShiftServiceUrl = "https://shift-api.adamn1225.repl.co"
+
+function Invoke-ShiftConvert {
     param(
-        [Parameter(Mandatory=$true, Position=0)]
+        [Parameter(Mandatory = $true)]
         [string]$InputFile,
         
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$To,
         
-        [string]$From,
-        [string]$Output,
-        [string]$Css,
-        [switch]$Batch,
-        [switch]$IgnoreLinks
+        [string]$Output
     )
     
-    # Build command arguments
-    $args = @($InputFile, "--to", $To)
+    if (!(Test-Path $InputFile)) {
+        Write-Error "File not found: $InputFile"
+        return
+    }
     
-    if ($From) { $args += @("--from", $From) }
-    if ($Output) { $args += @("--output", $Output) }
-    if ($Css) { $args += @("--css", $Css) }
-    if ($Batch) { $args += "--batch" }
-    if ($IgnoreLinks) { $args += "--ignore-links" }
+    Write-Host "🔄 Converting $InputFile to $To..." -ForegroundColor Yellow
     
-    # Run the Python script
-    python "$PSScriptRoot\doc_converter.py" @args
+    try {
+        # Create multipart form data
+        $form = @{
+            file          = Get-Item $InputFile
+            target_format = $To
+        }
+        
+        $response = Invoke-RestMethod -Uri "$ShiftServiceUrl/convert" -Method Post -Form $form
+        
+        if ($Output) {
+            [System.IO.File]::WriteAllBytes($Output, $response)
+            Write-Host "✅ Saved to: $Output" -ForegroundColor Green
+        }
+        else {
+            # Generate output filename
+            $baseName = [System.IO.Path]::GetFileNameWithoutExtension($InputFile)
+            $outputFile = "$baseName.$To"
+            [System.IO.File]::WriteAllBytes($outputFile, $response)
+            Write-Host "✅ Saved to: $outputFile" -ForegroundColor Green
+        }
+    }
+    catch {
+        Write-Error "Conversion failed: $($_.Exception.Message)"
+    }
 }
 
-# Create aliases for common usage
-Set-Alias -Name "shift" -Value "Invoke-Shift"
+function Invoke-ShiftCompress {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$InputFile,
+        
+        [string]$Output,
+        [string]$Quality = "ebook"
+    )
+    
+    if (!(Test-Path $InputFile)) {
+        Write-Error "File not found: $InputFile"
+        return
+    }
+    
+    Write-Host "🗜️ Compressing $InputFile..." -ForegroundColor Yellow
+    
+    try {
+        $form = @{
+            file    = Get-Item $InputFile
+            quality = $Quality
+        }
+        
+        $response = Invoke-RestMethod -Uri "$ShiftServiceUrl/compress" -Method Post -Form $form
+        
+        if ($Output) {
+            $outputFile = $Output
+        }
+        else {
+            $baseName = [System.IO.Path]::GetFileNameWithoutExtension($InputFile)
+            $outputFile = "${baseName}_compressed.pdf"
+        }
+        
+        [System.IO.File]::WriteAllBytes($outputFile, $response)
+        Write-Host "✅ Compressed and saved to: $outputFile" -ForegroundColor Green
+    }
+    catch {
+        Write-Error "Compression failed: $($_.Exception.Message)"
+    }
+}
 
-# Export functions
-Export-ModuleMember -Function Invoke-Shift -Alias shift
+function Invoke-ShiftOCR {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$InputFile,
+        
+        [string]$Output,
+        [string]$Language = "eng"
+    )
+    
+    if (!(Test-Path $InputFile)) {
+        Write-Error "File not found: $InputFile"
+        return
+    }
+    
+    Write-Host "🔍 Extracting text from $InputFile..." -ForegroundColor Yellow
+    
+    try {
+        $form = @{
+            file     = Get-Item $InputFile
+            language = $Language
+        }
+        
+        $text = Invoke-RestMethod -Uri "$ShiftServiceUrl/ocr" -Method Post -Form $form
+        
+        if ($Output) {
+            $text | Out-File $Output -Encoding UTF8
+            Write-Host "✅ Text saved to: $Output" -ForegroundColor Green
+        }
+        else {
+            Write-Host $text
+        }
+    }
+    catch {
+        Write-Error "OCR failed: $($_.Exception.Message)"
+    }
+}
+
+# Create aliases for familiar command names
+Set-Alias -Name "shift-convert" -Value "Invoke-ShiftConvert"
+Set-Alias -Name "shift-compress" -Value "Invoke-ShiftCompress"
+Set-Alias -Name "shift-ocr" -Value "Invoke-ShiftOCR"
+
+Export-ModuleMember -Function * -Alias *

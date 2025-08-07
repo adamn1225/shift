@@ -1,54 +1,22 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "shift"
+name = "shift-api"
 version = "1.0.0"
-description = "Universal document and PDF toolkit - Convert, compress, edit, and process documents"
-readme = "README.md"
-requires-python = ">=3.8"
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-]
-
+description = "Shift Document Processing API"
 dependencies = [
-    "pypdf>=5.9.0",
-    "fpdf2>=2.8.0",
-    "markdown>=3.8.0",
-    "beautifulsoup4>=4.13.0",
-    "python-docx>=1.2.0",
-    "docx2python>=3.5.0",
-    "pdfkit>=1.0.0",
-    "html2text>=2025.4.0",
-    "Pillow>=11.0.0",
-    "pymupdf>=1.23.0",
-    "pytesseract>=0.3.10",
-    "click>=8.0.0",
+    "flask==2.3.3",
+    "pypdf==5.9.0",
+    "pymupdf==1.26.3", 
+    "PyPDF2==3.0.1",
+    "python-docx==1.2.0",
+    "markdown==3.8.2",
+    "beautifulsoup4==4.13.4",
+    "pillow==11.3.0",
+    "pytesseract==0.3.13",
+    "pdf2image==1.17.0",
+    "fpdf2==2.8.3",
+    "docx2python==3.5.0"
 ]
-
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.0",
-    "black>=22.0",
-    "flake8>=4.0",
-]
-
-[project.scripts]
-shift = "doc_converter:main"
-shift-compress = "pdf_compressor:main"
-shift-pages = "pdf_page_manager:main"
-shift-edit = "pdf_editor:main" 
-shift-ocr = "pdf_ocr:main"
-
-[project.urls]
-Homepage = "https://github.com/yourusername/shift"
-Repository = "https://github.com/yourusername/shift"
-Issues = "https://github.com/yourusername/shift/issues"

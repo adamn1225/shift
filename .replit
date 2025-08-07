@@ -1,0 +1,6 @@
+{
+  "language": "python3",
+  "run": "python web_interface.py",
+  "modules": ["python3"],
+  "setup": "pip install -r requirements.txt"
+}

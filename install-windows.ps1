@@ -1,9 +1,9 @@
 # PowerShell installation script for Shift Cloud CLI
-# Run with: Set-ExecutionPolicy Bypass -Scope Process; .\install-windows.ps1
+# Run with: iwr -useb https://raw.githubusercontent.com/adamn1225/shift/main/install-windows.ps1 | iex
 
 param(
     [string]$InstallDir = "$env:USERPROFILE\shift-cloud",
-    [string]$ServiceUrl = $null
+    [string]$ServiceUrl = "https://shift-api.adamn1225.repl.co"
 )
 
 Write-Host ""
@@ -20,58 +20,41 @@ if (!(Test-Path $InstallDir)) {
 Write-Host "Installing to: $InstallDir" -ForegroundColor Green
 Write-Host ""
 
-# Download URLs
-$BaseUrl = "https://github.com/yourusername/shift/releases/latest/download"
-$ZipUrl = "$BaseUrl/shift-cloud-windows.zip"
-$ZipPath = "$InstallDir\shift-cloud.zip"
-
 try {
-    Write-Host "📥 Downloading latest version..." -ForegroundColor Yellow
-    Invoke-WebRequest -Uri $ZipUrl -OutFile $ZipPath -UseBasicParsing
+    Write-Host "📥 Downloading PowerShell module..." -ForegroundColor Yellow
     
-    Write-Host "📦 Extracting files..." -ForegroundColor Yellow
-    Expand-Archive -Path $ZipPath -DestinationPath $InstallDir -Force
+    # Download the PowerShell module
+    $moduleUrl = "https://raw.githubusercontent.com/adamn1225/shift/main/Shift.psm1"
+    $modulePath = "$InstallDir\Shift.psm1"
+    Invoke-WebRequest -Uri $moduleUrl -OutFile $modulePath -UseBasicParsing
     
-    # Clean up zip file
-    Remove-Item $ZipPath
+    Write-Host "📦 Installing module..." -ForegroundColor Yellow
     
-    # Add to user PATH
-    Write-Host "🔧 Adding to PATH..." -ForegroundColor Yellow
-    $CurrentPath = [Environment]::GetEnvironmentVariable("PATH", "User")
-    if ($CurrentPath -notlike "*$InstallDir*") {
-        $NewPath = "$CurrentPath;$InstallDir"
-        [Environment]::SetEnvironmentVariable("PATH", $NewPath, "User")
-        Write-Host "✅ Added to user PATH" -ForegroundColor Green
-    } else {
-        Write-Host "✅ Already in PATH" -ForegroundColor Green
+    # Create PowerShell modules directory if it doesn't exist
+    $userModulePath = "$env:USERPROFILE\Documents\PowerShell\Modules\Shift"
+    if (!(Test-Path $userModulePath)) {
+        New-Item -ItemType Directory -Path $userModulePath -Force | Out-Null
     }
     
-    # Set service URL if provided
-    if ($ServiceUrl) {
-        [Environment]::SetEnvironmentVariable("SHIFT_SERVICE_URL", $ServiceUrl, "User")
-        Write-Host "✅ Set service URL: $ServiceUrl" -ForegroundColor Green
-    }
+    # Copy module to PowerShell modules directory
+    Copy-Item $modulePath $userModulePath -Force
     
+    Write-Host "✅ Installation complete!" -ForegroundColor Green
     Write-Host ""
-    Write-Host "==========================================" -ForegroundColor Green
-    Write-Host "   Installation Complete! ✅" -ForegroundColor Green
-    Write-Host "==========================================" -ForegroundColor Green
+    Write-Host "Usage examples:" -ForegroundColor Yellow
+    Write-Host "  shift-convert document.docx -To pdf" -ForegroundColor White
+    Write-Host "  shift-compress large.pdf" -ForegroundColor White
+    Write-Host "  shift-ocr scanned.pdf" -ForegroundColor White
     Write-Host ""
-    Write-Host "Installation directory: $InstallDir" -ForegroundColor White
-    Write-Host ""
-    Write-Host "Usage:" -ForegroundColor White
-    Write-Host "  shift-cloud document.docx --to pdf" -ForegroundColor Cyan
-    Write-Host "  shift-cloud report.md --to html" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "Note: Restart PowerShell to use the new PATH" -ForegroundColor Yellow
-    Write-Host ""
+    Write-Host "Import the module now:" -ForegroundColor Yellow
+    Write-Host "  Import-Module Shift" -ForegroundColor White
     
-} catch {
+}
+catch {
+    Write-Error "Installation failed: $($_.Exception.Message)"
     Write-Host ""
-    Write-Host "❌ Installation failed: $($_.Exception.Message)" -ForegroundColor Red
-    Write-Host ""
-    Write-Host "Manual installation options:" -ForegroundColor Yellow
-    Write-Host "1. Download from: https://github.com/yourusername/shift/releases/latest" -ForegroundColor White
-    Write-Host "2. Install via Python: pip install shift-cloud-cli" -ForegroundColor White
-    Write-Host ""
+    Write-Host "Manual installation:" -ForegroundColor Yellow
+    Write-Host "1. Download: https://raw.githubusercontent.com/adamn1225/shift/main/Shift.psm1"
+    Write-Host "2. Save to: $userModulePath\Shift.psm1"
+    Write-Host "3. Run: Import-Module Shift"
 }
