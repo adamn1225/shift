@@ -31,6 +31,6 @@ pathlib==1.0.1
 click==8.2.1
 
 # Web interface (optional)
-flask==3.1.0
+flask==2.3.3
 gunicorn==21.2.0
 requests==2.31.0
