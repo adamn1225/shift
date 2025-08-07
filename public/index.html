@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Document Converter API</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .endpoint {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .method {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .method.get { background: #17a2b8; }
+        .method.post { background: #28a745; }
+        code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        .example {
+            background: #263238;
+            color: #eee;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .status {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .status.online {
+            color: #28a745;
+        }
+        .github-link {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .github-link a {
+            display: inline-block;
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔄 Shift Document Converter API</h1>
+        <p>Serverless document conversion powered by Netlify Functions</p>
+        <div class="status" id="status">
+            <span>Checking API status...</span>
+        </div>
+    </div>
+
+    <h2>📋 API Endpoints</h2>
+
+    <div class="endpoint">
+        <h3><span class="method get">GET</span> Health Check</h3>
+        <code>/.netlify/functions/health</code>
+        <p>Check if the API is running and get supported formats.</p>
+    </div>
+
+    <div class="endpoint">
+        <h3><span class="method post">POST</span> Convert Document</h3>
+        <code>/.netlify/functions/convert</code>
+        <p>Convert documents between formats. Send JSON with base64 encoded file data.</p>
+        
+        <h4>Request Format:</h4>
+        <div class="example">
+{
+  "file_data": "base64_encoded_file_content",
+  "filename": "document.docx",
+  "to_format": "pdf"
+}
+        </div>
+
+        <h4>Response Format:</h4>
+        <div class="example">
+{
+  "success": true,
+  "filename": "document.pdf",
+  "data": "base64_encoded_converted_file",
+  "size": 12345
+}
+        </div>
+    </div>
+
+    <h2>🛠️ Usage Examples</h2>
+
+    <h3>JavaScript/Browser</h3>
+    <div class="example">
+// Convert file using fetch API
+const convertFile = async (file, toFormat) => {
+  // Convert file to base64
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  
+  return new Promise((resolve) => {
+    reader.onload = async () => {
+      const base64Data = reader.result.split(',')[1];
+      
+      const response = await fetch('/.netlify/functions/convert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          file_data: base64Data,
+          filename: file.name,
+          to_format: toFormat
+        })
+      });
+      
+      const result = await response.json();
+      resolve(result);
+    };
+  });
+};
+    </div>
+
+    <h3>Python</h3>
+    <div class="example">
+import requests
+import base64
+
+# Read and encode file
+with open('document.docx', 'rb') as f:
+    file_data = base64.b64encode(f.read()).decode()
+
+# Convert document
+response = requests.post('https://your-site.netlify.app/.netlify/functions/convert', 
+  json={
+    'file_data': file_data,
+    'filename': 'document.docx', 
+    'to_format': 'pdf'
+  }
+)
+
+result = response.json()
+if result['success']:
+    # Decode and save converted file
+    converted_data = base64.b64decode(result['data'])
+    with open(result['filename'], 'wb') as f:
+        f.write(converted_data)
+    </div>
+
+    <h3>curl</h3>
+    <div class="example">
+# Health check
+curl https://your-site.netlify.app/.netlify/functions/health
+
+# Convert (with base64 encoded file)
+curl -X POST https://your-site.netlify.app/.netlify/functions/convert \
+  -H "Content-Type: application/json" \
+  -d '{"file_data":"base64_data","filename":"doc.docx","to_format":"pdf"}'
+    </div>
+
+    <h2>📝 Supported Formats</h2>
+    <ul>
+        <li><strong>Input:</strong> PDF, DOCX, HTML, Markdown, Text</li>
+        <li><strong>Output:</strong> PDF, DOCX, HTML, Markdown, Text</li>
+    </ul>
+
+    <h2>🚀 Rate Limits</h2>
+    <p>Netlify Free Tier includes:</p>
+    <ul>
+        <li>125,000 function invocations per month</li>
+        <li>100 hours of function runtime per month</li>
+        <li>Perfect for personal projects and sharing!</li>
+    </ul>
+
+    <div class="github-link">
+        <a href="https://github.com/adamn1225/shift" target="_blank">
+            📁 View Source Code on GitHub
+        </a>
+    </div>
+
+    <script>
+        // Check API health on page load
+        fetch('/.netlify/functions/health')
+            .then(response => response.json())
+            .then(data => {
+                const status = document.getElementById('status');
+                status.innerHTML = '<span class="online">✅ API is online and healthy!</span>';
+                status.className = 'status online';
+            })
+            .catch(error => {
+                const status = document.getElementById('status');
+                status.innerHTML = '<span>❌ API is offline</span>';
+            });
+    </script>
+</body>
+</html>

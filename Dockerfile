@@ -4,6 +4,11 @@ FROM python:3.11-slim
 RUN apt-get update && apt-get install -y \
     wkhtmltopdf \
     libreoffice \
+    ghostscript \
+    qpdf \
+    pandoc \
+    tesseract-ocr \
+    tesseract-ocr-eng \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -13,6 +18,10 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install the shift package
+COPY . .
+RUN pip install -e .
+
 # Copy application code
 COPY *.py ./
 COPY *.css ./
@@ -21,5 +30,8 @@ COPY *.css ./
 RUN mkdir /workspace
 WORKDIR /workspace
 
-# Set entrypoint
-ENTRYPOINT ["python", "/app/doc_converter.py"]
+# Make all shift commands available
+ENV PATH="/app:$PATH"
+
+# Default to main shift command, but allow override
+ENTRYPOINT ["shift"]

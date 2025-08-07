@@ -21,13 +21,21 @@ def read_readme():
 setup(
     name="shift",
     version="1.0.0",
-    description="Universal document format converter",
+    description="Universal document and PDF toolkit - Convert, compress, edit, and process documents",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
     author="Your Name",
     author_email="your.email@example.com",
     url="https://github.com/yourusername/shift",
-    py_modules=["doc_converter"],
+    py_modules=[
+        "doc_converter",
+        "pdf_compressor", 
+        "pdf_editor",
+        "pdf_page_manager",
+        "pdf_ocr",
+        "shift_cloud_cli",
+        "web_interface"
+    ],
     install_requires=[
         "pypdf>=5.9.0",
         "fpdf2>=2.8.0", 
@@ -38,10 +46,19 @@ setup(
         "pdfkit>=1.0.0",
         "html2text>=2025.4.0",
         "Pillow>=11.0.0",
+        "pymupdf>=1.23.0",
+        "pytesseract>=0.3.10",
     ],
     entry_points={
         'console_scripts': [
-            'shift=doc_converter:main',
+            'shift-convert=doc_converter:main',
+            'shift=doc_converter:main',  # Keep both for compatibility
+            'shift-compress=pdf_compressor:main',
+            'shift-pages=pdf_page_manager:main', 
+            'shift-edit=pdf_editor:main',
+            'shift-ocr=pdf_ocr:main',
+            'shift-cloud=shift_cloud_cli:main',
+            'shift-web=web_interface:app',
         ],
     },
     classifiers=[

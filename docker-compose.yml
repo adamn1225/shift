@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  shift:
+    build: .
+    container_name: shift-converter
+    volumes:
+      - ./workspace:/workspace
+      - ./input:/input:ro
+      - ./output:/output
+    environment:
+      - PYTHONUNBUFFERED=1
+    # Override default entrypoint for interactive use
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true
+
+  # Web service version (if you want to add a web interface later)
+  shift-web:
+    build: .
+    container_name: shift-web
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./workspace:/workspace
+      - ./uploads:/uploads
+      - ./downloads:/downloads
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    # This would need a web interface script
+    entrypoint: [ "python", "/app/web_interface.py" ]
+    profiles:
+      - web
+
+  # Batch processing service
+  shift-batch:
+    build: .
+    container_name: shift-batch
+    volumes:
+      - ./batch_input:/input
+      - ./batch_output:/output
+      - ./batch_logs:/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+    entrypoint: [ "python", "/app/batch_processor.py" ]
+    profiles:
+      - batch

@@ -1,0 +1,26 @@
+--- Page 1 ---
+Sample Document for Conversion
+This is a test document to demonstrate the doc_converter.py functionality.
+Features of the Document Converter:
+- Converts between multiple formats (PDF, Word, HTML, Markdown, Text)
+- Supports batch processing
+- Auto-detects file formats
+- Works globally from any directory
+Key Benefits:
+1. Easy to use command-line interface
+2. Multiple conversion options
+3. Preserves document structure
+4. Fast and reliable processing
+Technical Details:
+The converter uses various Python libraries:
+- pypdf for PDF handling
+- python-docx for Word documents
+- markdown for Markdown processing
+- beautifulsoup4 for HTML parsing
+Example Usage:
+doc-convert sample.txt --to pdf
+doc-convert report.md --to html
+
+--- Page 2 ---
+doc-convert document.docx --to pdf
+This tool makes document conversion simple and efficient!

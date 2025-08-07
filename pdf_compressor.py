@@ -4,8 +4,8 @@ PDF Compression Script for Outlook Attachments
 Compresses PDF files to be under 9.5MB for safe Outlook attachment.
 
 Usage:
-    python pdf_outlook_attachable.py input.pdf [output.pdf]
-    python pdf_outlook_attachable.py --batch folder_path
+    python pdf_compressor.py input.pdf [output.pdf]
+    python pdf_compressor.py --batch folder_path
 """
 
 import os

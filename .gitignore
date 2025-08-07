@@ -130,3 +130,6 @@ samples/*.docx
 *.bak
 *.backup
 *~
+
+# Local Netlify folder
+.netlify
