@@ -14,7 +14,7 @@ try {
         if ($LASTEXITCODE -eq 0) {
             Write-Host "✅ Shift CLI installed successfully via pip!" -ForegroundColor Green
             Write-Host "Usage: shift document.docx --to pdf" -ForegroundColor White
-            exit 0
+            return
         }
     }
     
@@ -25,7 +25,7 @@ try {
         
         if ($LASTEXITCODE -eq 0) {
             Write-Host "✅ Shift CLI installed successfully via Chocolatey!" -ForegroundColor Green
-            exit 0
+            return
         }
     }
     
@@ -53,7 +53,8 @@ try {
             Invoke-WebRequest -Uri $DownloadUrl -OutFile $ExePath -UseBasicParsing
             $Downloaded = $true
             break
-        } catch {
+        }
+        catch {
             Write-Host "Failed to download from $DownloadUrl" -ForegroundColor Gray
         }
     }
@@ -82,4 +83,3 @@ catch {
     Write-Host "2. choco install shift" -ForegroundColor White
     Write-Host "3. Download from: https://github.com/adamn1225/shift/releases" -ForegroundColor White
 }
-# Quick installer upload
