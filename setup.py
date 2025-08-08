@@ -27,6 +27,7 @@ setup(
     author="Adam N.",
     author_email="anoah1225@gmail.com",
     url="https://github.com/adamn1225/shift",
+    packages=find_packages(),
     py_modules=[
         "shift_converter",
         "pdf_compressor", 

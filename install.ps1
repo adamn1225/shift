@@ -102,8 +102,9 @@ if ($InstallationSuccessful) {
     $ConflictingShift = Get-Command shift -ErrorAction SilentlyContinue
     if ($ConflictingShift -and $ConflictingShift.Source -like "*chocolatey*") {
         Write-Host "⚠️  Warning: Found conflicting Chocolatey 'shift' package!" -ForegroundColor Yellow
-        Write-Host "   To avoid conflicts, use: python -m shift --help" -ForegroundColor White
-        Write-Host "   Or remove the old package: choco uninstall shift -y" -ForegroundColor White
+        Write-Host "   The 'shift' command is pointing to an incompatible executable." -ForegroundColor White
+        Write-Host "   To avoid conflicts, always use: python -m shift --help" -ForegroundColor White
+        Write-Host "   Or remove the old package with: choco uninstall shift -y (requires admin)" -ForegroundColor White
         Write-Host ""
     }
     
@@ -114,7 +115,8 @@ if ($InstallationSuccessful) {
         Write-Host "  python -m shift --help" -ForegroundColor Cyan
         Write-Host ""
         Write-Host "💡 Try running 'python -m shift --help' to get started!" -ForegroundColor Yellow
-    } else {
+    }
+    else {
         Write-Host "  shift document.docx --to pdf" -ForegroundColor Cyan
         Write-Host "  shift report.md --to html" -ForegroundColor Cyan
         Write-Host "  shift --help" -ForegroundColor Cyan
