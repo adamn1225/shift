@@ -15,7 +15,10 @@ try {
         Write-Host "📦 Installing latest version from GitHub..." -ForegroundColor Yellow
         python -m pip install "git+https://github.com/adamn1225/shift.git" --force-reinstall 2>$null
         
-        if ($LASTEXITCODE -eq 0) {
+        # Check if shift command is available (more reliable than exit code)
+        Start-Sleep -Seconds 2
+        $ShiftAvailable = Get-Command shift -ErrorAction SilentlyContinue
+        if ($ShiftAvailable) {
             Write-Host "✅ Shift CLI installed successfully from GitHub!" -ForegroundColor Green
             $InstallationSuccessful = $true
             $InstallMethod = "pip-github"
@@ -25,6 +28,9 @@ try {
             Write-Host "📦 Installing via pip (PyPI)..." -ForegroundColor Yellow
             python -m pip install shift --force-reinstall 2>$null
             
+            # Check if python -m shift works
+            Start-Sleep -Seconds 2
+            $PythonShiftTest = python -m shift --help 2>$null
             if ($LASTEXITCODE -eq 0) {
                 Write-Host "✅ Shift CLI installed successfully via pip!" -ForegroundColor Green
                 $InstallationSuccessful = $true
