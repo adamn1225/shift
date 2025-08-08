@@ -10,15 +10,26 @@ $InstallationSuccessful = $false
 $InstallMethod = ""
 
 try {
-    # Method 1: Try pip installation first (best option)
+    # Method 1: Try pip installation from GitHub (latest version with working entry points)
     if (-not $InstallationSuccessful -and (Get-Command python -ErrorAction SilentlyContinue)) {
-        Write-Host "📦 Installing via pip..." -ForegroundColor Yellow
-        python -m pip install shift 2>$null
+        Write-Host "📦 Installing latest version from GitHub..." -ForegroundColor Yellow
+        python -m pip install "git+https://github.com/adamn1225/shift.git" --force-reinstall 2>$null
         
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "✅ Shift CLI installed successfully via pip!" -ForegroundColor Green
+            Write-Host "✅ Shift CLI installed successfully from GitHub!" -ForegroundColor Green
             $InstallationSuccessful = $true
-            $InstallMethod = "pip"
+            $InstallMethod = "pip-github"
+        }
+        else {
+            # Fallback to PyPI version
+            Write-Host "📦 Installing via pip (PyPI)..." -ForegroundColor Yellow
+            python -m pip install shift --force-reinstall 2>$null
+            
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "✅ Shift CLI installed successfully via pip!" -ForegroundColor Green
+                $InstallationSuccessful = $true
+                $InstallMethod = "pip"
+            }
         }
     }
     
@@ -109,7 +120,16 @@ if ($InstallationSuccessful) {
     }
     
     Write-Host "Usage examples:" -ForegroundColor White
-    if ($InstallMethod -eq "pip") {
+    if ($InstallMethod -eq "pip-github") {
+        Write-Host "  shift document.docx --to pdf" -ForegroundColor Cyan
+        Write-Host "  shift report.md --to html" -ForegroundColor Cyan
+        Write-Host "  shift --help" -ForegroundColor Cyan
+        Write-Host ""
+        Write-Host "  Alternative: python -m shift --help" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "💡 Try running 'shift --help' to get started!" -ForegroundColor Yellow
+    }
+    elseif ($InstallMethod -eq "pip") {
         Write-Host "  python -m shift document.docx --to pdf" -ForegroundColor Cyan
         Write-Host "  python -m shift report.md --to html" -ForegroundColor Cyan
         Write-Host "  python -m shift --help" -ForegroundColor Cyan
