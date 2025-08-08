@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>shift</id>
+    <version>1.0.0</version>
+    <authors>Adam N.</authors>
+    <owners>Adam N.</owners>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/adamn1225/shift</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>CLI tool for document conversion, compression, OCR, and more.</description>
+    <tags>cli pdf converter ocr tools</tags>
+  </metadata>
+  <files>
+    <file src="tools\shift.exe" target="tools" />
+    <file src="tools\chocolateyInstall.ps1" target="tools" />
+    <file src="tools\chocolateyUninstall.ps1" target="tools" />
+  </files>
+</package>

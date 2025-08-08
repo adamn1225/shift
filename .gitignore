@@ -1,135 +1,64 @@
-    venv/
-# Ignore Python virtual environment directories
-    .venv/
-# Ignore Python bytecode files
-    __pycache__/
-# Ignore Python bytecode files
-    *.pyc
-# Ignore Python bytecode files
-    *.pyo
-# Ignore Python bytecode files
-    *.pyd
-# Ignore Jupyter Notebook checkpoints
-    .ipynb_checkpoints/
-# Ignore Jupyter Notebook metadata
-    .ipython/
-# Ignore Jupyter Notebook configuration files
-    .jupyter/
-# Ignore Jupyter Notebook output files
-    *.ipynb
-# Python
+# ===========================
+# Python-related
+# ===========================
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+*.pyo
+*.pyd
+*.pdb
+*.so
+*.log
 
-# Virtual Environment
+# Virtual environments
 .venv/
 venv/
-ENV/
 env/
-.env
 
-# IDE/Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-Thumbs.db
+# PyInstaller or dist output
+dist/
+build/
 
-# Debian package build artifacts
-debian/.debhelper/
-debian/debhelper-build-stamp
-debian/files
-debian/shift/
-debian/shift.substvars
-debian/tmp/
+# ===========================
+# Debian packaging artifacts
+# ===========================
 *.deb
-*.dsc
-*.changes
 *.build
 *.buildinfo
+*.changes
+*.dsc
+shift_*.tar.gz
+debian/shift/
+debian/*.substvars
+debian/*.log
+debian/*.debhelper
+debian/*build-stamp
+debian/files
 
-# Chocolatey package artifacts
-chocolatey/*.nupkg
-chocolatey/tools/
-
-# Test files and outputs
-test_output/
-*.test.html
-*.test.pdf
-*.test.docx
-*.test.txt
-sample_output.*
-
-# Logs
-*.log
-logs/
-
-# Temporary files
-tmp/
-temp/
-*.tmp
-*.temp
-
-# OS generated files
+# ===========================
+# OS junk
+# ===========================
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
 
-# Documentation build
-docs/_build/
-site/
-
-# Coverage reports
-htmlcov/
-.coverage
-.coverage.*
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
-# Personal/sensitive files
-config.local.*
-*.secret
-*.key
-.env.local
-.env.production
-
-# Large sample files (keep small examples only)
-samples/*.pdf
-samples/*.docx
-!samples/small_example.*
-
-# Backup files
+# ===========================
+# Editor junk
+# ===========================
+*.swp
+*.swo
 *.bak
-*.backup
-*~
+*.tmp
+*.orig
+.idea/
+.vscode/
 
-# Local Netlify folder
-.netlify
+# ===========================
+# Test output
+# ===========================
+test_output.html
+result.html
+*.pdf
+sample_*.*

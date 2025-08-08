@@ -91,8 +91,8 @@ if [ -f "$SCRIPT_DIR/pdf_editor.py" ]; then
     create_wrapper "pdf-editor" "$SCRIPT_DIR/pdf_editor.py"
 fi
 
-if [ -f "$SCRIPT_DIR/doc_converter.py" ]; then
-    create_wrapper "doc-convert" "$SCRIPT_DIR/doc_converter.py"
+if [ -f "$SCRIPT_DIR/shift_converter.py" ]; then
+    create_wrapper "doc-convert" "$SCRIPT_DIR/shift_converter.py"
 fi
 
 echo
@@ -101,7 +101,7 @@ echo
 echo "Available commands:"
 echo "  pdf-compress    - Compress PDFs for email (pdf_outlook_attachable.py)"
 echo "  pdf-pages       - Analyze and remove PDF pages (pdf_page_manager.py)"
-echo "  doc-convert     - Convert between document formats (doc_converter.py)"
+echo "  doc-convert     - Convert between document formats (shift_converter.py)"
 
 if [ -f "$SCRIPT_DIR/pdf_editor.py" ]; then
     echo "  pdf-editor      - Advanced PDF editing (pdf_editor.py)"

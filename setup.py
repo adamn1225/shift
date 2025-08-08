@@ -24,17 +24,17 @@ setup(
     description="Universal document and PDF toolkit - Convert, compress, edit, and process documents",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
-    author="Your Name",
-    author_email="your.email@example.com",
-    url="https://github.com/yourusername/shift",
+    author="Adam N.",
+    author_email="anoah1225@gmail.com",
+    url="https://github.com/adamn1225/shift",
     py_modules=[
-        "doc_converter",
+        "shift_converter",
         "pdf_compressor", 
         "pdf_editor",
         "pdf_page_manager",
         "pdf_ocr",
         "shift_cloud_cli",
-        "web_interface"
+        "main"
     ],
     install_requires=[
         "pypdf>=5.9.0",
@@ -51,14 +51,14 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'shift-convert=doc_converter:main',
-            'shift=doc_converter:main',  # Keep both for compatibility
+            'shift-convert=shift_converter:main',
+            'shift=shift_converter:main',  # Keep both for compatibility
             'shift-compress=pdf_compressor:main',
             'shift-pages=pdf_page_manager:main', 
             'shift-edit=pdf_editor:main',
             'shift-ocr=pdf_ocr:main',
             'shift-cloud=shift_cloud_cli:main',
-            'shift-web=web_interface:app',
+            'shift-web=main:app',
         ],
     },
     classifiers=[

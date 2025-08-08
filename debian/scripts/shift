@@ -15,12 +15,12 @@ if os.path.exists(STYLES_DIR):
 
 # Import and run the main converter
 try:
-    from doc_converter import main
+    from shift_converter import main
     if __name__ == "__main__":
         main()
 except ImportError:
     # Fallback - try to find the module in the current directory
     script_dir = Path(__file__).parent
     sys.path.insert(0, str(script_dir))
-    from doc_converter import main
+    from shift_converter import main
     main()

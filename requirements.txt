@@ -1,4 +1,5 @@
 # PDF Tools Requirements
+
 # Core PDF manipulation
 pypdf==5.9.0
 pymupdf==1.26.3
@@ -17,20 +18,16 @@ beautifulsoup4==4.13.4
 html2text==2025.4.15
 pdfkit==1.0.0
 fpdf2==2.8.3
+click==8.2.1
 
-# Web scraping and parsing
-bs4==0.0.2
+# Web scraping / parsing
 lxml==6.0.0
 
-# Scientific computing (for advanced features)
+# Scientific/utility
 numpy==2.2.6
 pandas==2.3.1
 
-# Additional utilities
-pathlib==1.0.1
-click==8.2.1
-
-# Web interface (optional)
+# Web (optional)
 flask==2.3.3
 gunicorn==21.2.0
 requests==2.31.0

@@ -1,0 +1,32 @@
+PackageIdentifier: adamn1225.shift
+PackageVersion: 1.0.0
+PackageName: Shift
+Publisher: Adam N.
+License: MIT
+LicenseUrl: https://opensource.org/licenses/MIT
+ShortDescription: Universal document format converter CLI tool
+Description: CLI tool for document conversion, compression, OCR, and more. Convert between PDF, Word, HTML, Markdown, Text formats with batch processing support.
+Homepage: https://github.com/adamn1225/shift
+PackageUrl: https://github.com/adamn1225/shift
+Tags:
+- cli
+- pdf
+- converter
+- ocr
+- documents
+- batch-processing
+Commands:
+- shift
+- shift-convert
+- shift-compress
+- shift-ocr
+- shift-pages
+- shift-edit
+Installers:
+- Architecture: x64
+  InstallerType: exe
+  InstallerUrl: https://github.com/adamn1225/shift/releases/latest/download/shift-windows-x64.exe
+  InstallerSha256: # This will be filled by the release process
+  Scope: user
+ManifestType: singleton
+ManifestVersion: 1.0.0

@@ -1,0 +1,55 @@
+Shift - Universal Document Toolkit (Debian Package Notes)
+=========================================================
+
+Shift is a command-line suite for document and PDF manipulation, supporting conversion,
+compression, OCR, page editing, and batch workflows. This README covers key usage notes
+specific to the Debian `.deb` package installation.
+
+Getting Started
+---------------
+
+After installing the package via `dpkg -i`, run any of the following commands:
+
+    shift-convert myfile.docx --to pdf
+    shift-compress big.pdf
+    shift-ocr scanned.pdf
+    shift-pages document.pdf
+    shift-edit contract.pdf
+
+NOTE: Avoid using `shift` alone as it may conflict with the bash built-in. Use `shift-convert` instead.
+
+Optional System Dependencies
+----------------------------
+
+Some advanced features require additional tools:
+
+- `pandoc`: Markdown/HTML/Word conversions
+- `libreoffice`: DOC, DOCX, ODT conversions
+- `ghostscript`: High-quality PDF compression
+- `wkhtmltopdf`: HTML to PDF
+- `tesseract-ocr`: OCR for scanned documents
+
+Install them with:
+
+    sudo apt install pandoc libreoffice wkhtmltopdf ghostscript tesseract-ocr
+
+Usage Examples
+--------------
+
+    shift-convert report.md --to pdf --css style.css
+    shift-compress presentation.pdf --quality ebook
+    shift-ocr scans/ --batch --output extracted/
+    shift-pages document.pdf --remove 1,2,5
+    shift-edit document.pdf --split-pages
+
+Support
+-------
+
+Project URL: https://github.com/adamn1225/shift  
+Issues: https://github.com/adamn1225/shift/issues  
+Author: Adam N. <your.email@example.com>
+
+License
+-------
+
+MIT License. See /usr/share/doc/shift/copyright

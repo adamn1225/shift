@@ -1,22 +1,36 @@
-# Build script for Windows executable
-# Run this in PowerShell or Git Bash
+#!/bin/bash
 
-echo "🏗️  Building Windows executable for Shift..."
+echo "🛠️  Building Windows executable for Shift..."
 
-# Install PyInstaller if not already installed
-pip install pyinstaller
+# Ensure pyinstaller is available
+pip install --upgrade pyinstaller
 
-# Clean previous builds
-if [ -d "dist" ]; then rm -rf dist; fi
-if [ -d "build" ]; then rm -rf build; fi
+# Clean old builds
+rm -rf build dist shift.spec
 
-# Create executable
+# Create the standalone binary
 pyinstaller --onefile --name shift --add-data "*.css;." doc_converter.py
 
-echo "✅ Built shift.exe in dist/ folder"
-echo "📦 You can now distribute dist/shift.exe"
+if [ ! -f "dist/shift.exe" ]; then
+  echo "❌ Build failed: shift.exe not found"
+  exit 1
+fi
+
+echo "✅ Built shift.exe in dist/"
+
+# Prepare Chocolatey package folder
+mkdir -p chocolatey/tools
+cp dist/shift.exe chocolatey/tools/
+
+echo "📦 Copied shift.exe to chocolatey/tools/"
+
+# Package .nupkg
+cd chocolatey
+choco pack shift.nuspec
+
+echo "✅ .nupkg package built:"
+ls *.nupkg
+
 echo ""
-echo "🚀 Users can:"
-echo "  1. Download shift.exe"
-echo "  2. Add to PATH or put in C:\\Windows\\System32"
-echo "  3. Use: shift document.docx --to pdf"
+echo "🚀 To publish:"
+echo "  choco push shift-cli.1.0.1.nupkg --source https://push.chocolatey.org/ --api-key <your-api-key>"

@@ -4,38 +4,110 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        
+  build-windows-exe:
+    runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-        
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pyinstaller
-        pip install -r requirements.txt
-        
-    - name: Build binary
-      run: |
-        pyinstaller --onefile --name pdf-tools-${{ matrix.os }} doc_converter.py
-        
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./dist/pdf-tools-${{ matrix.os }}
-        asset_name: pdf-tools-${{ matrix.os }}
-        asset_content_type: application/octet-stream
+      - uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+          
+      - name: Build Windows executable
+        run: |
+          pyinstaller --clean shift.spec
+          
+      - name: Test executable
+        run: |
+          dist\shift.exe --help
+          
+      - name: Create distribution archive
+        run: |
+          powershell -Command "Compress-Archive -Path 'dist\shift.exe' -DestinationPath 'shift-windows.zip' -Force"
+          
+      - name: Upload Windows executable
+        uses: actions/upload-artifact@v3
+        with:
+          name: shift-windows-exe
+          path: |
+            dist/shift.exe
+            shift-windows.zip
+
+  build-python-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Build package
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+          
+      - name: Upload to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+  create-release:
+    needs: [build-windows-exe, build-python-package]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Download Windows executable
+        uses: actions/download-artifact@v3
+        with:
+          name: shift-windows-exe
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            shift.exe
+            install.ps1
+            install-windows.bat
+          body: |
+            ## 🚀 Shift CLI v${{ github.ref_name }}
+            
+            ### Installation Options:
+            
+            **🐍 Python (Recommended)**
+            ```bash
+            pip install shift
+            ```
+            
+            **🍫 Chocolatey (Windows)**
+            ```cmd
+            choco install shift
+            ```
+            
+            **⚡ One-liner (Windows PowerShell)**
+            ```powershell
+            iwr -useb https://raw.githubusercontent.com/adamn1225/shift/main/install.ps1 | iex
+            ```
+            
+            **📦 Direct Download**
+            Download `shift.exe` and add to your PATH
+            
+            ### What's New
+            - Document conversion between PDF, Word, HTML, Markdown, Text
+            - PDF compression and OCR
+            - Batch processing support
+            - Cross-platform compatibility
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

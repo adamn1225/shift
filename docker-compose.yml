@@ -29,7 +29,7 @@ services:
       - FLASK_ENV=production
       - PYTHONUNBUFFERED=1
     # This would need a web interface script
-    entrypoint: [ "python", "/app/web_interface.py" ]
+    entrypoint: [ "python", "/app/main.py" ]
     profiles:
       - web
 

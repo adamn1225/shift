@@ -1,0 +1,13 @@
+{
+    "version": "1.0.0",
+    "description": "Universal document format converter CLI tool",
+    "homepage": "https://github.com/adamn1225/shift",
+    "license": "MIT",
+    "url": "https://github.com/adamn1225/shift/releases/download/v1.0.0/shift-windows.zip",
+    "hash": "sha256:placeholder",
+    "bin": "shift.exe",
+    "checkver": "github",
+    "autoupdate": {
+        "url": "https://github.com/adamn1225/shift/releases/download/v$version/shift-windows.zip"
+    }
+}

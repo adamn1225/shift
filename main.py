@@ -9,7 +9,7 @@ import sys
 sys.path.append('.')
 
 # Import your existing modules
-from doc_converter import DocumentConverter
+from shift_converter import DocumentConverter
 from pdf_compressor import PDFCompressor
 from pdf_ocr import PDFOCRExtractor
 
