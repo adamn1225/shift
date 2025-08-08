@@ -97,12 +97,30 @@ if ($InstallationSuccessful) {
     Write-Host ""
     Write-Host "🎉 Installation completed via $InstallMethod!" -ForegroundColor Green
     Write-Host ""
+    
+    # Check for potential conflicts
+    $ConflictingShift = Get-Command shift -ErrorAction SilentlyContinue
+    if ($ConflictingShift -and $ConflictingShift.Source -like "*chocolatey*") {
+        Write-Host "⚠️  Warning: Found conflicting Chocolatey 'shift' package!" -ForegroundColor Yellow
+        Write-Host "   To avoid conflicts, use: python -m shift --help" -ForegroundColor White
+        Write-Host "   Or remove the old package: choco uninstall shift -y" -ForegroundColor White
+        Write-Host ""
+    }
+    
     Write-Host "Usage examples:" -ForegroundColor White
-    Write-Host "  shift document.docx --to pdf" -ForegroundColor Cyan
-    Write-Host "  shift report.md --to html" -ForegroundColor Cyan
-    Write-Host "  shift --help" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "💡 Try running 'shift --help' to get started!" -ForegroundColor Yellow
+    if ($InstallMethod -eq "pip") {
+        Write-Host "  python -m shift document.docx --to pdf" -ForegroundColor Cyan
+        Write-Host "  python -m shift report.md --to html" -ForegroundColor Cyan
+        Write-Host "  python -m shift --help" -ForegroundColor Cyan
+        Write-Host ""
+        Write-Host "💡 Try running 'python -m shift --help' to get started!" -ForegroundColor Yellow
+    } else {
+        Write-Host "  shift document.docx --to pdf" -ForegroundColor Cyan
+        Write-Host "  shift report.md --to html" -ForegroundColor Cyan
+        Write-Host "  shift --help" -ForegroundColor Cyan
+        Write-Host ""
+        Write-Host "💡 Try running 'shift --help' to get started!" -ForegroundColor Yellow
+    }
 }
 else {
     Write-Host ""
