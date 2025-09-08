@@ -188,7 +188,7 @@ class DocumentConverter:
     def docx_to_text(self, input_path: Path, output_path: Path, **kwargs) -> bool:
         """Convert Word document to plain text."""
         try:
-            doc = docx.Document(input_path)
+            doc = docx.Document(str(input_path))
             text_content = []
             
             for paragraph in doc.paragraphs:
@@ -211,7 +211,7 @@ class DocumentConverter:
                 return self.convert_with_pandoc(input_path, output_path, 'docx', 'html')
             
             # Fallback to basic conversion
-            doc = docx.Document(input_path)
+            doc = docx.Document(str(input_path))
             html_content = [f"<h1>{input_path.stem}</h1>"]
             
             for paragraph in doc.paragraphs:
@@ -279,13 +279,18 @@ class DocumentConverter:
                 return self.convert_with_pandoc(input_path, output_path, 'docx', 'md')
             
             # Basic fallback
-            doc = docx.Document(input_path)
+            doc = docx.Document(str(input_path))
             md_content = [f"# {input_path.stem}\n"]
             
             for paragraph in doc.paragraphs:
                 if paragraph.text.strip():
                     # Simple formatting detection
-                    if paragraph.style.name.startswith('Heading'):
+                    if (
+                        paragraph.style is not None
+                        and hasattr(paragraph.style, 'name')
+                        and paragraph.style.name is not None
+                        and paragraph.style.name.startswith('Heading')
+                    ):
                         level = '##' if '1' in paragraph.style.name else '###'
                         md_content.append(f"{level} {paragraph.text}\n")
                     else:
@@ -389,7 +394,7 @@ class DocumentConverter:
                 elif line:
                     doc.add_paragraph(line)
             
-            doc.save(output_path)
+            doc.save(str(output_path))
             return True
         except Exception as e:
             print(f"Error converting Markdown to DOCX: {e}")
@@ -407,10 +412,34 @@ class DocumentConverter:
                     'margin-bottom': '0.75in',
                     'margin-left': '0.75in',
                     'encoding': "UTF-8",
-                    'no-outline': None
+                    'no-outline': None,
+                    'enable-local-file-access': None,
+                    'disable-smart-shrinking': '',
+                    'print-media-type': '',
+                    'load-error-handling': 'ignore',
+                    'load-media-error-handling': 'ignore'
                 }
-                pdfkit.from_file(str(input_path), str(output_path), options=options)
-                return True
+                
+                # Try to convert with robust error handling
+                try:
+                    pdfkit.from_file(str(input_path), str(output_path), options=options)
+                    return True
+                except Exception as e:
+                    # If the conversion fails, try with minimal options
+                    print(f"Initial conversion failed, trying with minimal options: {e}")
+                    minimal_options = {
+                        'page-size': 'A4',
+                        'enable-local-file-access': None,
+                        'load-error-handling': 'ignore',
+                        'disable-external-links': '',
+                        'disable-internal-links': ''
+                    }
+                    try:
+                        pdfkit.from_file(str(input_path), str(output_path), options=minimal_options)
+                        return True
+                    except Exception as e2:
+                        print(f"Minimal conversion also failed: {e2}")
+                        return False
             else:
                 print("wkhtmltopdf not found. Install with: sudo apt-get install wkhtmltopdf")
                 return False
