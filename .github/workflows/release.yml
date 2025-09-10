@@ -9,6 +9,9 @@ on:
 jobs:
   build-python-package:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # For API token authentication
+      contents: read   # For accessing repository contents
     steps:
       - uses: actions/checkout@v3
       
@@ -26,6 +29,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
+          verbose: true
 
   create-release:
     needs: [build-python-package]
@@ -46,7 +50,7 @@ jobs:
           body: |
             ## 🚀 Shift CLI v${{ github.ref_name }}
             
-            ### ✨ What's New in v1.0.2
+            ### ✨ What's New in v1.0.4
             - **Enhanced Text-to-HTML Conversion**: Beautiful, professional HTML output with proper paragraph formatting
             - **Intelligent Paragraph Detection**: Automatically converts text to structured HTML with `<p>` tags
             - **Company Entry Formatting**: Special styling for business listings with highlighted names and contact info
