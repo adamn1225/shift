@@ -525,7 +525,6 @@ class DocumentConverter:
     
     def text_to_html(self, input_path: Path, output_path: Path, **kwargs) -> bool:
         """Convert plain text to HTML with proper paragraph formatting."""
-        print("DEBUG: Using NEW text_to_html method!")  # Debug line
         try:
             with open(input_path, 'r', encoding='utf-8') as f:
                 text_content = f.read()
@@ -746,8 +745,6 @@ class DocumentConverter:
         
         # Check if conversion is supported
         conversion_key = (from_format, to_format)
-        print(f"DEBUG: Looking for conversion {conversion_key}")  # Debug line
-        print(f"DEBUG: Available conversions: {list(self.converters.keys())}")  # Debug line
         
         if conversion_key in self.converters:
             print(f"Converting {from_format.upper()} to {to_format.upper()}...")
@@ -816,6 +813,7 @@ class DocumentConverter:
 
 
 def main():
+    import sys
     parser = argparse.ArgumentParser(
         description="Convert between document formats (PDF, Word, HTML, Markdown, Text)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
