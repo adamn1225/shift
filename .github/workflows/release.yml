@@ -7,44 +7,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-windows-exe:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pyinstaller
-          
-      - name: Build Windows executable
-        run: |
-          pyinstaller --clean shift.spec
-          
-      - name: Test executable
-        run: |
-          dist\shift.exe --help
-          
-      - name: Create distribution archive
-        run: |
-          powershell -Command "Compress-Archive -Path 'dist\shift.exe' -DestinationPath 'shift-windows.zip' -Force"
-          
-      - name: Upload Windows executable
-        uses: actions/upload-artifact@v3
-        with:
-          name: shift-windows-exe
-          path: |
-            dist/shift.exe
-            shift-windows.zip
-
   build-python-package:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # For trusted publishing to PyPI
+      contents: read
     steps:
       - uses: actions/checkout@v3
       
@@ -60,54 +27,69 @@ jobs:
           
       - name: Upload to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
 
   create-release:
-    needs: [build-windows-exe, build-python-package]
+    needs: [build-python-package]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # For creating releases
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Download Windows executable
-        uses: actions/download-artifact@v3
-        with:
-          name: shift-windows-exe
           
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            shift.exe
+            install-unix.sh
             install.ps1
-            install-windows.bat
+            README.md
+            CHANGELOG.md
           body: |
             ## 🚀 Shift CLI v${{ github.ref_name }}
             
-            ### Installation Options:
+            ### ✨ What's New in v1.0.2
+            - **Enhanced Text-to-HTML Conversion**: Beautiful, professional HTML output with proper paragraph formatting
+            - **Intelligent Paragraph Detection**: Automatically converts text to structured HTML with `<p>` tags
+            - **Company Entry Formatting**: Special styling for business listings with highlighted names and contact info
+            - **Modern CSS Styling**: Professional typography, colors, and responsive design
+            - **Improved Document Structure**: Semantic HTML elements for better readability
             
-            **🐍 Python (Recommended)**
+            ### 📥 Installation Options:
+            
+            **🐍 Python (Recommended - All Platforms)**
             ```bash
             pip install shift
             ```
             
-            **🍫 Chocolatey (Windows)**
-            ```cmd
-            choco install shift
+            **🐧 Linux (Ubuntu/Debian)**
+            ```bash
+            curl -sSL https://raw.githubusercontent.com/adamn1225/shift/main/install-unix.sh | bash
             ```
             
-            **⚡ One-liner (Windows PowerShell)**
-            ```powershell
-            iwr -useb https://raw.githubusercontent.com/adamn1225/shift/main/install.ps1 | iex
+            **🍎 macOS**
+            ```bash
+            pip install shift
+            # OR
+            curl -sSL https://raw.githubusercontent.com/adamn1225/shift/main/install-unix.sh | bash
             ```
             
-            **📦 Direct Download**
-            Download `shift.exe` and add to your PATH
+            ### � Usage Examples
             
-            ### What's New
-            - Document conversion between PDF, Word, HTML, Markdown, Text
-            - PDF compression and OCR
-            - Batch processing support
-            - Cross-platform compatibility
+            **Convert with enhanced formatting:**
+            ```bash
+            shift-convert document.txt --to html  # Now produces beautiful, structured HTML!
+            shift-convert report.md --to pdf --css professional.css
+            shift-compress large-file.pdf  # Compress for email
+            shift-ocr scanned-doc.pdf --extract-text
+            ```
+            
+            ### 📋 Available Commands
+            - `shift-convert` - Document conversion with improved HTML output
+            - `shift-compress` - PDF compression for email attachments
+            - `shift-pages` - PDF page management and analysis
+            - `shift-edit` - Advanced PDF editing (CLI and GUI)
+            - `shift-ocr` - OCR text extraction from scanned documents
+            
+            Perfect for business documents, reports, and professional document processing!
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
