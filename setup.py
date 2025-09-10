@@ -19,7 +19,7 @@ def read_readme():
     return "Universal document format converter"
 
 setup(
-    name="shift",
+    name="shift-cli",
     version="1.0.4",
     description="Universal document and PDF toolkit - Convert, compress, edit, and process documents",
     long_description=read_readme(),
@@ -27,7 +27,7 @@ setup(
     author="Adam N.",
     author_email="anoah1225@gmail.com",
     url="https://github.com/adamn1225/shift",
-    packages=find_packages(),
+    packages=[],  # No packages - we use py_modules instead
     py_modules=[
         "shift_converter",
         "pdf_compressor", 
