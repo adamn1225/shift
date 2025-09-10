@@ -524,29 +524,64 @@ class DocumentConverter:
             return False
     
     def text_to_html(self, input_path: Path, output_path: Path, **kwargs) -> bool:
-        """Convert plain text to HTML."""
+        """Convert plain text to HTML with proper paragraph formatting."""
+        print("DEBUG: Using NEW text_to_html method!")  # Debug line
         try:
             with open(input_path, 'r', encoding='utf-8') as f:
                 text_content = f.read()
             
-            # Convert line breaks to HTML
-            html_content = text_content.replace('\n', '<br>\n')
-            
-            full_html = f"""
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>{input_path.stem}</title>
-                <meta charset="utf-8">
+            # Get CSS file if provided
+            css_file = kwargs.get('css')
+            css_content = ""
+            if css_file and Path(css_file).exists():
+                with open(css_file, 'r', encoding='utf-8') as f:
+                    css_content = f"<style>\n{f.read()}\n</style>"
+            else:
+                # Default styling for better readability
+                css_content = """
                 <style>
-                    body {{ font-family: monospace; white-space: pre-wrap; margin: 40px; }}
-                </style>
-            </head>
-            <body>
-                {html_content}
-            </body>
-            </html>
-            """
+                    body { 
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                        line-height: 1.6; 
+                        max-width: 800px; 
+                        margin: 40px auto; 
+                        padding: 20px;
+                        color: #333;
+                        background: #fafafa;
+                    }
+                    h1, h2, h3 { color: #2c3e50; }
+                    p { margin: 1em 0; }
+                    .company-entry { 
+                        margin: 1.5em 0; 
+                        padding: 1em; 
+                        background: white; 
+                        border-radius: 5px;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    }
+                    .company-name { 
+                        font-weight: bold; 
+                        color: #2c3e50; 
+                        font-size: 1.1em;
+                    }
+                    .contact-info { 
+                        color: #666; 
+                        font-size: 0.9em; 
+                    }
+                </style>"""
+            
+            # Smart paragraph detection and formatting
+            html_content = self._format_text_content(text_content)
+            
+            full_html = f"""<!DOCTYPE html>
+<html>
+<head>
+    <title>{input_path.stem}</title>
+    <meta charset="utf-8">{css_content}
+</head>
+<body>
+{html_content}
+</body>
+</html>"""
             
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(full_html)
@@ -555,6 +590,85 @@ class DocumentConverter:
         except Exception as e:
             print(f"Error converting text to HTML: {e}")
             return False
+    
+    def _format_text_content(self, text: str) -> str:
+        """Format plain text content into proper HTML with paragraphs and structure."""
+        lines = text.strip().split('\n')
+        html_parts = []
+        current_paragraph = []
+        
+        for line in lines:
+            line = line.strip()
+            
+            # Skip empty lines
+            if not line:
+                if current_paragraph:
+                    # End current paragraph
+                    para_text = ' '.join(current_paragraph)
+                    html_parts.append(self._format_paragraph(para_text))
+                    current_paragraph = []
+                continue
+            
+            # Check if this looks like a company name/header (contains company keywords and location)
+            if self._looks_like_company_header(line):
+                # End any current paragraph
+                if current_paragraph:
+                    para_text = ' '.join(current_paragraph)
+                    html_parts.append(self._format_paragraph(para_text))
+                    current_paragraph = []
+                
+                # Format as company entry
+                html_parts.append(f'<div class="company-entry">')
+                company_info = self._split_company_info(line)
+                html_parts.append(f'<div class="company-name">{company_info["name"]}</div>')
+                if company_info["location"]:
+                    html_parts.append(f'<div class="contact-info">{company_info["location"]}</div>')
+            else:
+                # Add to current paragraph
+                current_paragraph.append(line)
+        
+        # Handle any remaining paragraph
+        if current_paragraph:
+            para_text = ' '.join(current_paragraph)
+            html_parts.append(self._format_paragraph(para_text))
+        
+        # Close any open company entries
+        if html_parts and not html_parts[-1].endswith('</div>'):
+            html_parts.append('</div>')
+        
+        return '\n'.join(html_parts)
+    
+    def _looks_like_company_header(self, line: str) -> bool:
+        """Check if a line looks like a company name/header."""
+        # Look for patterns like "Company NameCity, StatePhone"
+        # This is a simple heuristic - could be improved
+        has_phone = any(char.isdigit() for char in line[-15:])  # Phone number at end
+        has_state = any(f', {state}' in line for state in ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'])
+        company_words = ['Inc', 'LLC', 'Corp', 'Company', 'Co.', 'Ltd', 'Industries', 'Manufacturing', 'Services']
+        has_company_word = any(word in line for word in company_words)
+        
+        return has_phone and (has_state or has_company_word)
+    
+    def _split_company_info(self, line: str) -> dict:
+        """Split a company header line into name and contact info."""
+        # Try to find where the location starts (usually after company name)
+        import re
+        
+        # Look for city, state pattern
+        location_match = re.search(r'([A-Za-z\s]+,\s*[A-Z]{2}[\d\-\s]*)', line)
+        if location_match:
+            location_start = location_match.start()
+            name = line[:location_start].strip()
+            location = line[location_start:].strip()
+            return {"name": name, "location": location}
+        else:
+            return {"name": line, "location": ""}
+    
+    def _format_paragraph(self, text: str) -> str:
+        """Format a paragraph of text as HTML."""
+        if not text.strip():
+            return ""
+        return f'<p>{text}</p>'
     
     def text_to_markdown(self, input_path: Path, output_path: Path, **kwargs) -> bool:
         """Convert plain text to Markdown."""
@@ -632,6 +746,8 @@ class DocumentConverter:
         
         # Check if conversion is supported
         conversion_key = (from_format, to_format)
+        print(f"DEBUG: Looking for conversion {conversion_key}")  # Debug line
+        print(f"DEBUG: Available conversions: {list(self.converters.keys())}")  # Debug line
         
         if conversion_key in self.converters:
             print(f"Converting {from_format.upper()} to {to_format.upper()}...")

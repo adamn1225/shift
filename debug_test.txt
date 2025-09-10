@@ -1,0 +1,13 @@
+Sample Text Document
+
+This is paragraph one.
+It has multiple lines.
+
+This is paragraph two.
+It also has multiple lines.
+
+Another Company Inc
+123 Business St, Austin, TX 78701
+Phone: (555) 123-4567
+
+Final paragraph here.
