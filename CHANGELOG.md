@@ -1,4 +1,13 @@
-# Changelog
+# Chang# Changelog
+
+## [1.0.5] - 2025-09-10
+### Enhanced
+- **Improved Company Entry Grouping**: Company information is now properly grouped into single div containers instead of individual line divs
+- **Better Content Recognition**: Enhanced detection patterns for company names and contact information
+- **Semantic HTML Structure**: Each company entry now contains structured contact information with proper paragraph and div usage
+- **Contact Info Detection**: Improved recognition of phone numbers, addresses, and other contact details
+
+## [1.0.4] - 2025-09-10log
 
 All notable changes to Shift CLI will be documented in this file.
 

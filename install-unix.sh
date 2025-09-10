@@ -35,7 +35,7 @@ echo "Detected Architecture: $ARCH"
 echo ""
 
 # Set download URL based on OS
-BASE_URL="https://github.com/yourusername/shift/releases/latest/download"
+BASE_URL="https://github.com/adamn1225/shift/releases/latest/download"
 case "$OS" in
     "linux")
         DOWNLOAD_URL="$BASE_URL/shift-cloud-linux-$ARCH"

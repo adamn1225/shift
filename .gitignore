@@ -14,7 +14,7 @@ __pycache__/
 .venv/
 venv/
 env/
-
+.env
 # PyInstaller or dist output
 dist/
 build/

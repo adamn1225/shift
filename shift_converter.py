@@ -595,20 +595,29 @@ class DocumentConverter:
         lines = text.strip().split('\n')
         html_parts = []
         current_paragraph = []
+        in_company_entry = False
+        company_lines = []
         
         for line in lines:
             line = line.strip()
             
             # Skip empty lines
             if not line:
-                if current_paragraph:
+                if in_company_entry:
+                    # Empty line might end a company entry
+                    if len(company_lines) >= 2:  # Minimum lines for a company entry
+                        html_parts.append(self._format_company_entry(company_lines))
+                        company_lines = []
+                        in_company_entry = False
+                    continue
+                elif current_paragraph:
                     # End current paragraph
                     para_text = ' '.join(current_paragraph)
                     html_parts.append(self._format_paragraph(para_text))
                     current_paragraph = []
                 continue
             
-            # Check if this looks like a company name/header (contains company keywords and location)
+            # Check if this looks like a company name/header
             if self._looks_like_company_header(line):
                 # End any current paragraph
                 if current_paragraph:
@@ -616,37 +625,95 @@ class DocumentConverter:
                     html_parts.append(self._format_paragraph(para_text))
                     current_paragraph = []
                 
-                # Format as company entry
-                html_parts.append(f'<div class="company-entry">')
-                company_info = self._split_company_info(line)
-                html_parts.append(f'<div class="company-name">{company_info["name"]}</div>')
-                if company_info["location"]:
-                    html_parts.append(f'<div class="contact-info">{company_info["location"]}</div>')
+                # Start or continue company entry
+                company_lines.append(line)
+                in_company_entry = True
+            elif in_company_entry:
+                # Continue collecting company-related lines
+                company_lines.append(line)
+                
+                # Check if this line looks like it ends company info (like a phone number)
+                if self._looks_like_contact_info(line):
+                    # This might be the end of company entry, but continue collecting
+                    pass
             else:
-                # Add to current paragraph
+                # Regular content - add to current paragraph
                 current_paragraph.append(line)
         
-        # Handle any remaining paragraph
-        if current_paragraph:
+        # Handle any remaining content
+        if company_lines and in_company_entry:
+            html_parts.append(self._format_company_entry(company_lines))
+        elif current_paragraph:
             para_text = ' '.join(current_paragraph)
             html_parts.append(self._format_paragraph(para_text))
         
-        # Close any open company entries
-        if html_parts and not html_parts[-1].endswith('</div>'):
-            html_parts.append('</div>')
-        
         return '\n'.join(html_parts)
+    
+    def _format_company_entry(self, company_lines: List[str]) -> str:
+        """Format multiple lines as a single company entry."""
+        if not company_lines:
+            return ""
+        
+        # First line is typically the company name
+        company_name = company_lines[0]
+        
+        # Group remaining lines into contact info
+        contact_lines = company_lines[1:] if len(company_lines) > 1 else []
+        
+        html_parts = ['<div class="company-entry">']
+        html_parts.append(f'<div class="company-name">{company_name}</div>')
+        
+        # Add contact information as individual paragraphs within the company entry
+        for contact_line in contact_lines:
+            if self._looks_like_contact_info(contact_line):
+                html_parts.append(f'<div class="contact-info">{contact_line}</div>')
+            else:
+                html_parts.append(f'<p>{contact_line}</p>')
+        
+        html_parts.append('</div>')
+        return '\n'.join(html_parts)
+    
+    def _looks_like_contact_info(self, line: str) -> bool:
+        """Check if a line looks like contact information (phone, address, etc.)."""
+        # Phone patterns
+        if any(pattern in line for pattern in ['Phone:', 'Tel:', 'Call:', '(']):
+            return True
+        
+        # Address patterns (city, state, zip)
+        import re
+        if re.search(r'[A-Za-z\s]+,\s*[A-Z]{2}\s*\d{5}', line):
+            return True
+        
+        # Email patterns
+        if '@' in line and '.' in line:
+            return True
+            
+        return False
     
     def _looks_like_company_header(self, line: str) -> bool:
         """Check if a line looks like a company name/header."""
-        # Look for patterns like "Company NameCity, StatePhone"
-        # This is a simple heuristic - could be improved
-        has_phone = any(char.isdigit() for char in line[-15:])  # Phone number at end
-        has_state = any(f', {state}' in line for state in ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'])
-        company_words = ['Inc', 'LLC', 'Corp', 'Company', 'Co.', 'Ltd', 'Industries', 'Manufacturing', 'Services']
+        # Look for company keywords
+        company_words = ['Inc', 'LLC', 'Corp', 'Company', 'Co.', 'Ltd', 'Industries', 'Manufacturing', 'Services', 'Group', 'Associates', 'Solutions', 'Systems', 'Technologies']
         has_company_word = any(word in line for word in company_words)
         
-        return has_phone and (has_state or has_company_word)
+        # Look for patterns that suggest it's a business name (not contact info)
+        is_not_contact = not any(pattern in line.lower() for pattern in ['phone:', 'tel:', 'email:', 'fax:', 'www.', 'http'])
+        
+        # If it has company words and isn't contact info, likely a company name
+        if has_company_word and is_not_contact:
+            return True
+            
+        # Alternative: look for patterns like "Business Name" followed by location info
+        # This is less reliable but catches some cases
+        if len(line) > 20 and not line.startswith(('Phone', 'Tel', 'Email', 'Address')):
+            # Check if it might be a company name with embedded contact info
+            import re
+            # Look for business name patterns (Title Case words)
+            title_case_pattern = re.search(r'^[A-Z][a-z]+(\s+[A-Z][a-z]*)*', line)
+            if title_case_pattern and len(title_case_pattern.group()) > 10:
+                return True
+        
+        return False
     
     def _split_company_info(self, line: str) -> dict:
         """Split a company header line into name and contact info."""
