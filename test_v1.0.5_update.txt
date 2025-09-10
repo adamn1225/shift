@@ -1,0 +1,7 @@
+Company Example Corp
+123 Main Street, Austin, TX 75201
+Phone: (555) 123-4567
+
+Another Manufacturing Inc
+456 Oak Avenue, Dallas, TX 75202
+Phone: (555) 987-6543

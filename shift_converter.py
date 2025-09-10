@@ -541,30 +541,122 @@ class DocumentConverter:
                 <style>
                     body { 
                         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-                        line-height: 1.6; 
-                        max-width: 800px; 
+                        line-height: 1.7; 
+                        max-width: 900px; 
                         margin: 40px auto; 
-                        padding: 20px;
-                        color: #333;
-                        background: #fafafa;
+                        padding: 30px;
+                        color: #2c3e50;
+                        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                        min-height: 100vh;
                     }
-                    h1, h2, h3 { color: #2c3e50; }
-                    p { margin: 1em 0; }
-                    .company-entry { 
+                    
+                    /* Typography enhancements */
+                    h1, h2, h3 { 
+                        color: #34495e; 
+                        font-weight: 600;
+                        margin-top: 2em;
+                        margin-bottom: 1em;
+                    }
+                    
+                    h1 {
+                        font-size: 2.2em;
+                        border-bottom: 3px solid #3498db;
+                        padding-bottom: 0.5em;
+                    }
+                    
+                    h2 {
+                        font-size: 1.8em;
+                        border-left: 4px solid #3498db;
+                        padding-left: 1em;
+                    }
+                    
+                    /* Enhanced paragraph styling */
+                    p { 
                         margin: 1.5em 0; 
-                        padding: 1em; 
-                        background: white; 
-                        border-radius: 5px;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        text-align: justify;
+                        text-indent: 1.5em;
+                        background: rgba(255, 255, 255, 0.8);
+                        padding: 1.2em 1.5em;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                        border-left: 3px solid #ecf0f1;
+                        transition: all 0.3s ease;
                     }
-                    .company-name { 
-                        font-weight: bold; 
-                        color: #2c3e50; 
+                    
+                    p:first-of-type {
+                        text-indent: 0;
                         font-size: 1.1em;
+                        font-weight: 500;
+                        border-left-color: #3498db;
                     }
+                    
+                    p:hover {
+                        background: rgba(255, 255, 255, 0.95);
+                        transform: translateY(-1px);
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                    }
+                    
+                    /* Company entry styling */
+                    .company-entry { 
+                        margin: 2em 0; 
+                        padding: 1.5em; 
+                        background: linear-gradient(145deg, #ffffff, #f8f9fa); 
+                        border-radius: 12px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                        border: 1px solid #e9ecef;
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .company-entry:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                    }
+                    
+                    .company-name { 
+                        font-weight: 700; 
+                        color: #2c3e50; 
+                        font-size: 1.3em;
+                        margin-bottom: 0.8em;
+                        border-bottom: 2px solid #3498db;
+                        padding-bottom: 0.5em;
+                    }
+                    
                     .contact-info { 
-                        color: #666; 
-                        font-size: 0.9em; 
+                        color: #7f8c8d; 
+                        font-size: 0.95em;
+                        margin: 0.5em 0;
+                        padding: 0.3em 0;
+                        font-weight: 500;
+                    }
+                    
+                    /* Responsive design */
+                    @media (max-width: 768px) {
+                        body {
+                            padding: 20px;
+                            margin: 20px auto;
+                        }
+                        
+                        p {
+                            padding: 1em;
+                            margin: 1em 0;
+                        }
+                        
+                        .company-entry {
+                            padding: 1em;
+                        }
+                    }
+                    
+                    /* Print styles */
+                    @media print {
+                        body {
+                            background: white;
+                            color: black;
+                        }
+                        
+                        p, .company-entry {
+                            box-shadow: none;
+                            background: white;
+                        }
                     }
                 </style>"""
             
