@@ -20,7 +20,7 @@ def read_readme():
 
 setup(
     name="shift-cli",
-    version="1.0.5",
+    version="1.0.6",
     description="Universal document and PDF toolkit - Convert, compress, edit, and process documents",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
